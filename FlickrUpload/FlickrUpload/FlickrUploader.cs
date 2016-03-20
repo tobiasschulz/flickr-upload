@@ -5,9 +5,9 @@ namespace FlickrUpload
 {
 	public class FlickrUploader
 	{
-		public static void Upload (LocalFile file)
+		public static void Upload (LocalFile file, int i, int n)
 		{
-			Console.WriteLine ("Upload local file: " + file);
+			Console.Write ("Upload local file " + i + " of " + n + ": " + file + " => ");
 			var f = FlickrManager.GetAuthInstance ();
 			f.OnUploadProgress += F_OnUploadProgress;
 			string photoId = f.UploadPicture (file.FullPath, file.Title, file.Description, string.Join (",", new [] {

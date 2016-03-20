@@ -20,22 +20,22 @@ namespace FlickrUpload
 				.ToArray ();
 
 
-			//photosToUpload = photosToUpload.Where (p => p.FullPath.Contains ("Francisco")).ToArray ();
+			photosToUpload = photosToUpload.Where (p => p.FullPath.Contains ("Francisco")).ToArray ();
 
+			int i = 0;
 			foreach (var p in photosToUpload) {
-				FlickrUploader.Upload (p);
+				FlickrUploader.Upload (p, i, photosToUpload.Length);
 
 				// sleep depending on the time of day
 				var timeofday = DateTime.Now.TimeOfDay;
 				var hours = timeofday.TotalHours;
-				if (hours >= 9 && hours <= 23) {
+				if (hours >= 9.5 || hours <= 1.5) {
 					var sleep = r.Next (20, 70);
-					Console.WriteLine ("It's " + ((int)hours).ToString ().PadLeft (2, '0') + ":" + timeofday.Minutes.ToString ().PadLeft (2, '0') + " o’clock, so we wait " + sleep + " seconds");
+					Console.WriteLine ("It's " + ((int)hours).ToString ().PadLeft (2, '0') + ":" + timeofday.Minutes.ToString ().PadLeft (2, '0') + ", so we wait " + sleep + " seconds");
 					System.Threading.Thread.Sleep (sleep * 1000);
 				}
 
-
-				//break;
+				i++;
 			}
 		}
 	}
