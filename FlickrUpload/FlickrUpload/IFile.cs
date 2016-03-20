@@ -36,8 +36,8 @@ namespace FlickrUpload
 
 		public override string ToString ()
 		{
-			// return string.Format ("[LocalFile: PathTag={0}, Description={1}]", PathTag, Description);
-			return string.Format ("[LocalFile: Description={0}]", Description);
+			// return string.Format ("[LocalFile: PathTag=\"{0}\", Description=\"{1}\"]", PathTag, Description);
+			return string.Format ("[LocalFile: Description=\"{0}\"]", Description);
 		}
 	}
 
@@ -58,8 +58,8 @@ namespace FlickrUpload
 
 		public override string ToString ()
 		{
-			// return string.Format ("[RemoteFile: PathTag={0}, Description={1}]", PathTag, Description);
-			return string.Format ("[RemoteFile: Description={0}]", Description);
+			// return string.Format ("[RemoteFile: PathTag=\"{0}\", Description=\"{1}\"]", PathTag, Description);
+			return string.Format ("[RemoteFile: Description=\"{0}\"]", Description);
 		}
 	}
 }

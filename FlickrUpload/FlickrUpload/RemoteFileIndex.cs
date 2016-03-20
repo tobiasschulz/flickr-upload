@@ -21,6 +21,7 @@ namespace FlickrUpload
 
 			var f = FlickrManager.GetAuthInstance ();
 
+			int i = 0;
 			var results = f.PhotosSearch (o);
 			do {
 				Console.WriteLine ("Result count: " + results.Total);
@@ -30,7 +31,9 @@ namespace FlickrUpload
 
 					ByDesc [file.Description] = file;
 
-					Console.WriteLine (file);
+					Console.WriteLine ("Remote file " + i + ": " + file);
+
+					i++;
 				}
 
 
