@@ -24,7 +24,7 @@ namespace FlickrUpload
 			int i = 0;
 			var results = f.PhotosSearch (o);
 			do {
-				Console.WriteLine ("Result count (page " + results.Page + "): " + results.Count);
+				Console.WriteLine ("Result count (page " + results.Page + " of " + results.Pages + "): " + results.Count);
 				foreach (var p in results) {
 					// Console.WriteLine (p.ToJson ());
 					var file = new RemoteFile (p);
