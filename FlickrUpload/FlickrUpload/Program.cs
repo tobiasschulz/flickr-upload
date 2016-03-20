@@ -20,7 +20,7 @@ namespace FlickrUpload
 				.ToArray ();
 
 
-			photosToUpload = photosToUpload.Where (p => p.FullPath.Contains ("Francisco")).ToArray ();
+			photosToUpload = photosToUpload.Where (p => p.FullPath.ContainsAny ("Francisco", "York")).ToArray ();
 
 			int i = 0;
 			foreach (var p in photosToUpload) {
