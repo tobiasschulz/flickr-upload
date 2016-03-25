@@ -33,7 +33,7 @@ namespace FlickrUpload
 		public string RelativePathNormalized { get; set; }
 
 		[JsonProperty ("geo_location")]
-		public GeoLocation GeoLocation { get; set; }
+		public GeoLocation GeoLocation { get; set; } = GeoLocation.Zero;
 
 		public LocalFile (string fullPath, string relativePathNormalized)
 		{
@@ -67,7 +67,7 @@ namespace FlickrUpload
 		public string Title { get; set; }
 
 		[JsonProperty ("geo_location")]
-		public GeoLocation GeoLocation { get; set; }
+		public GeoLocation GeoLocation { get; set; } = GeoLocation.Zero;
 
 		public RemoteFile (FlickrNet.Photo p)
 		{
@@ -77,7 +77,7 @@ namespace FlickrUpload
 			Title = p.Title;
 
 			if (Math.Abs (p.Latitude) > 0.1 && Math.Abs (p.Longitude) > 0.1) {
-				GeoLocation = new GeoLocation { Lat = p.Latitude, Lng = p.Longitude };
+				GeoLocation = new GeoLocation (p.Latitude, p.Longitude);
 			}
 		}
 

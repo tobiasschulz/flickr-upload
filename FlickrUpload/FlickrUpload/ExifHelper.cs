@@ -7,7 +7,7 @@ namespace FlickrUpload
 	{
 		public static GeoLocation GetLatlngFromImage (string imagePath)
 		{
-			GeoLocation result = null;
+			GeoLocation result = GeoLocation.Zero;
 
 			using (var stream = System.IO.File.OpenRead (imagePath)) {
 				JpegInfo info;
@@ -15,7 +15,7 @@ namespace FlickrUpload
 					info = ExifReader.ReadJpeg (stream);
 				} catch (Exception) {
 					Console.WriteLine ("Warning: unable to get jpeg info from: " + imagePath);
-					return null;
+					return GeoLocation.Zero;
 				}
 
 				// EXIF lat/lng tags stored as [Degree, Minute, Second]
@@ -28,9 +28,7 @@ namespace FlickrUpload
 				if (latitudeComponents != null && longitudeComponents != null) {
 					var latitude = ConvertDegreeAngleToDouble (latitudeComponents [0], latitudeComponents [1], latitudeComponents [2], latitudeRef);
 					var longitude = ConvertDegreeAngleToDouble (longitudeComponents [0], longitudeComponents [1], longitudeComponents [2], longitudeRef);
-					if (Math.Abs (latitude) > 0.1 && Math.Abs (longitude) > 0.1) {
-						result = new GeoLocation { Lat = latitude, Lng = longitude };
-					}
+					result = new GeoLocation (latitude, longitude);
 				}
 			}
 			return result;
@@ -62,9 +60,41 @@ namespace FlickrUpload
 
 	public class GeoLocation
 	{
-		public double Lat { get; set; }
+		public double Lat { get; }
 
-		public double Lng { get; set; }
+		public double Lng { get; }
+
+		public GeoLocation (double lat, double lng)
+		{
+			Lat = lat;
+			Lng = lng;
+		}
+
+		public static GeoLocation Zero { get; } = new GeoLocation(0,0);
+
+		public bool IsNonZero { get { return Lat != 0 && Lng != 0; } }
+
+		public bool IsZero { get { return Lat == 0 || Lng == 0; } }
+
+		public string Serialize ()
+		{
+			if (IsZero) {
+				return "null";
+			} else {
+				return string.Format ("{0},{1}", Lat, Lng);
+			}
+		}
+
+		public static GeoLocation Deserialize (string s)
+		{
+			if (!string.IsNullOrWhiteSpace (s) && s != "null") {
+				var p = s.Split (',');
+				if (p.Length == 2) {
+					return new GeoLocation (p [0].ToDouble (), p [1].ToDouble ());
+				}
+			}
+			return GeoLocation.Zero;
+		}
 	}
 }
 

@@ -27,7 +27,7 @@ namespace FlickrUpload
 			Directory.CreateDirectory (Path.GetDirectoryName (ConfigFile));
 			Console.WriteLine ("Load database from: " + ConfigFile);
 			if (File.Exists (ConfigFile)) {
-				_instance = File.ReadAllText (ConfigFile).FromJson<LocalDatabase> () ?? new LocalDatabase ();
+				_instance = JsonConvert.DeserializeObject<LocalDatabase> (File.ReadAllText (ConfigFile)) ?? new LocalDatabase ();
 			} else {
 				_instance = new LocalDatabase ();
 			}
@@ -37,7 +37,7 @@ namespace FlickrUpload
 		{
 			Directory.CreateDirectory (Path.GetDirectoryName (ConfigFile));
 			Console.WriteLine ("Save database to: " + ConfigFile);
-			File.WriteAllText (ConfigFile, Instance.ToJson ());
+			File.WriteAllText (ConfigFile, Instance.ToJson (ignoreNull: false));
 		}
 
 		public static void RunLocked (Action action)
@@ -48,7 +48,7 @@ namespace FlickrUpload
 		}
 
 		[JsonProperty ("geo_locations")]
-		public Dictionary<string, GeoLocation> GeoLocations { get; set; } = new Dictionary<string, GeoLocation>();
+		public Dictionary<string, string> GeoLocations { get; set; } = new Dictionary<string, string>();
 
 		[JsonProperty ("remote_files")]
 		public Dictionary<string, RemoteFile> RemoteFiles { get; set; } = new Dictionary<string, RemoteFile>();

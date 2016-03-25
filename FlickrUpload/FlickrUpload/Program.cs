@@ -55,10 +55,10 @@ namespace FlickrUpload
 			}
 
 			// geo tagging
-			var remoteMissingGeoPhotos = indexLocal.Photos.Where (p => p.GeoLocation != null).Select (p => {
+			var remoteMissingGeoPhotos = indexLocal.Photos.Where (p => p.GeoLocation.IsNonZero).Select (p => {
 				RemoteFile rf;
 				if (LocalDatabase.Instance.RemoteFiles.TryGetValue (p.Description, out rf)) {
-					if (rf.GeoLocation == null) {
+					if (rf.GeoLocation.IsZero) {
 						return new { local = p, remote = rf };
 					}
 				}

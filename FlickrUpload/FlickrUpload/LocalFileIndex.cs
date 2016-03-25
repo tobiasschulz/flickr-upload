@@ -62,44 +62,52 @@ namespace FlickrUpload
 			var photosJpeg = photos.Where (p => p.FullPath.EndsWithAny ("jpg", "jpeg")).ToArray ();
 			var photosJpegWithoutGeo = new List<LocalFile> ();
 			foreach (var file in photosJpeg) {
-				GeoLocation geo;
-				if (LocalDatabase.Instance.GeoLocations.TryGetValue (file.Description, out geo)) {
-					file.GeoLocation = geo;
+				string geoStr;
+				if (LocalDatabase.Instance.GeoLocations.TryGetValue (file.Description, out geoStr)) {
+					file.GeoLocation = GeoLocation.Deserialize (geoStr);
 				} else {
 					photosJpegWithoutGeo.Add (file);
 				}
 			}
 			Console.WriteLine ("Local photos without geo location: " + photosJpegWithoutGeo.Count + " of " + photosJpeg.Length);
-			int parallelism = 8;
-			int i = 0;
-			Task[] tasks = new Task[parallelism];
+			var parallelism = 4;
+			var i = 0;
+			var tasks = new Task[parallelism];
+			var timeStart = DateTime.Now;
 			for (int m = 0; m < parallelism; m++) {
-				tasks [m] = Task.Run (async () => await parallel (photosJpegWithoutGeo, m, (file) => {
+				tasks [m] = parallel (photosJpegWithoutGeo, parallelism, m, (file) => {
 					var geo = ExifHelper.GetLatlngFromImage (file.FullPath);
 					file.GeoLocation = geo;
-					LocalDatabase.RunLocked (() => LocalDatabase.Instance.GeoLocations [file.Description] = geo);
-					i++;
-					if (i % 100 == 0) {
+					LocalDatabase.RunLocked (() => {
+						i++;
+						LocalDatabase.Instance.GeoLocations [file.Description] = geo.Serialize ();
+					});
+					if (i % 200 == 0) {
 						LocalDatabase.RunLocked (() => {
+							var timeNow = DateTime.Now;
+							var speed = (timeNow - timeStart).TotalMilliseconds / Math.Max (i, 1);
+							var timeRemaining = TimeSpan.FromMilliseconds (speed * (photosJpegWithoutGeo.Count - i));
 							LocalDatabase.Save ();
-							Console.WriteLine ("  " + i + " of " + photosJpegWithoutGeo.Count + " (" + Math.Round (10000.0 / (double)photosJpegWithoutGeo.Count * (double)i) / 100 + "%)");
+							Console.WriteLine ("  " + i + " of " + photosJpegWithoutGeo.Count + " (" + Math.Round (10000.0 / (double)photosJpegWithoutGeo.Count * (double)i) / 100 + "%, remaining: " + new DateTime (timeRemaining.Ticks).ToString ("HH:mm:ss") + ")");
 						});
 					}
-				}));
+				});
 			}
 			await Task.WhenAll (tasks);
 
 			LocalDatabase.Save ();
 		}
 
-		static Task parallel<T> (List<T> list, int modulo, Action<T> call)
+		static Task parallel<T> (List<T> list, int parallelism, int modulo, Action<T> call)
 		{
-			for (int i = 0; i < list.Count; i++) {
-				if (i % modulo == 0) {
-					call (list [i]);
+			return Task.Run (() => {
+				for (int i = 0; i < list.Count; i++) {
+					if (i % parallelism == modulo) {
+						// Console.WriteLine (modulo + ": " + i);
+						call (list [i]);
+					}
 				}
-			}
-			return Tasks.Completed;
+			});
 		}
 	}
 }
