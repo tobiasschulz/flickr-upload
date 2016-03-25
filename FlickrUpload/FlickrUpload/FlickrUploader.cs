@@ -35,6 +35,27 @@ namespace FlickrUpload
 		{
 			
 		}
+
+		public static void FixGeoLocation (LocalFile file, RemoteFile remote)
+		{
+			try {
+				Console.Write ("Fix geo location: " + remote.Description + " (" + file.GeoLocation + ")");
+				var f = FlickrManager.GetAuthInstance ();
+				f.OnUploadProgress += F_OnUploadProgress;
+				f.PhotosGeoSetLocation (remote.PhotoId, file.GeoLocation.Lat, file.GeoLocation.Lng);
+			} catch (Exception ex) {
+				CountFailures++;
+				if (CountFailures > 10) {
+					throw;
+				}
+				Console.WriteLine ("Exception during fix geo location:");
+				Console.WriteLine (ex);
+				int sec = 2 * Math.Min (5, CountFailures);
+				Console.WriteLine ("Wait for " + sec + " seconds");
+				System.Threading.Thread.Sleep (1000 * sec);
+			}
+		}
+
 	}
 }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using FlickrNet;
+using System.Threading.Tasks;
 
 namespace FlickrUpload
 {
@@ -9,8 +10,12 @@ namespace FlickrUpload
 
 		public RemoteFileIndex ()
 		{
+		}
+
+		public async Task Build ()
+		{
 			PhotoSearchOptions o = new PhotoSearchOptions ();
-			o.Extras = PhotoSearchExtras.AllUrls | PhotoSearchExtras.Description | PhotoSearchExtras.OriginalUrl | PhotoSearchExtras.Tags;
+			o.Extras = PhotoSearchExtras.AllUrls | PhotoSearchExtras.Description | PhotoSearchExtras.OriginalUrl | PhotoSearchExtras.Tags | PhotoSearchExtras.Geo;
 			o.SortOrder = PhotoSearchSortOrder.DateTakenDescending;
 			//o.Tags = FlickrManager.MasterTag;
 			//o.TagMode = TagMode.AllTags;
@@ -28,6 +33,7 @@ namespace FlickrUpload
 				foreach (var p in results) {
 					// Console.WriteLine (p.ToJson ());
 					var file = new RemoteFile (p);
+					LocalDatabase.RunLocked (() => LocalDatabase.Instance.RemoteFiles [file.Description] = file);
 
 					ByDesc [file.Description] = file;
 
@@ -36,7 +42,7 @@ namespace FlickrUpload
 					i++;
 				}
 
-
+				await Task.Delay (1000);
 
 				o.Page++;
 				results = f.PhotosSearch (o);
