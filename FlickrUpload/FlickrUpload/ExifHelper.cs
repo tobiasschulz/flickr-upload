@@ -1,5 +1,7 @@
 ﻿using System;
 using ExifLib;
+using Newtonsoft.Json;
+using System.Globalization;
 
 namespace FlickrUpload
 {
@@ -60,9 +62,15 @@ namespace FlickrUpload
 
 	public class GeoLocation
 	{
-		public double Lat { get; }
+		[JsonProperty ("lat")]
+		public double Lat { get; set; }
 
-		public double Lng { get; }
+		[JsonProperty ("lng")]
+		public double Lng { get; set; }
+
+		public GeoLocation ()
+		{
+		}
 
 		public GeoLocation (double lat, double lng)
 		{
@@ -72,8 +80,10 @@ namespace FlickrUpload
 
 		public static GeoLocation Zero { get; } = new GeoLocation(0,0);
 
+		[JsonIgnore]
 		public bool IsNonZero { get { return Lat != 0 && Lng != 0; } }
 
+		[JsonIgnore]
 		public bool IsZero { get { return Lat == 0 || Lng == 0; } }
 
 		public string Serialize ()
@@ -81,19 +91,28 @@ namespace FlickrUpload
 			if (IsZero) {
 				return "null";
 			} else {
-				return string.Format ("{0},{1}", Lat, Lng);
+				return string.Format ("{0},{1}", Lat.ToString (CultureInfo.InvariantCulture), Lng.ToString (CultureInfo.InvariantCulture));
 			}
 		}
 
 		public static GeoLocation Deserialize (string s)
 		{
-			if (!string.IsNullOrWhiteSpace (s) && s != "null") {
+			if (!string.IsNullOrWhiteSpace (s) && s != "null" && s != "NaN,NaN") {
 				var p = s.Split (',');
-				if (p.Length == 2) {
-					return new GeoLocation (p [0].ToDouble (), p [1].ToDouble ());
+				double d1, d2;
+				if (p.Length == 2 && double.TryParse (p [0], NumberStyles.Float, CultureInfo.InvariantCulture, out d1) && double.TryParse (p [1], NumberStyles.Float, CultureInfo.InvariantCulture, out d2)) {
+					return new GeoLocation (d1, d2);
+				}
+				if (p.Length == 4 && double.TryParse (p [0] + "." + p [1], NumberStyles.Float, CultureInfo.InvariantCulture, out d1) && double.TryParse (p [2] + "." + p [3], NumberStyles.Float, CultureInfo.InvariantCulture, out d2)) {
+					return new GeoLocation (d1, d2);
 				}
 			}
 			return GeoLocation.Zero;
+		}
+
+		public override string ToString ()
+		{
+			return Serialize ();
 		}
 	}
 }

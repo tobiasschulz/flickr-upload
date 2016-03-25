@@ -63,10 +63,18 @@ namespace FlickrUpload
 					}
 				}
 				return null;
-			}).Where (o => o != null).ToArray ();
+			}).Where (o => o != null).Select ((o, j) => new { local = o.local, remote = o.remote, i = j }).ToArray ();
+			Console.WriteLine ("Local photos with geo location: " + indexLocal.Photos.Count (p => p.GeoLocation.IsNonZero));
+			Console.WriteLine ("Remote photos with geo location: " + LocalDatabase.Instance.RemoteFiles.Values.Count (p => p.GeoLocation.IsNonZero));
 			Console.WriteLine ("Local photos with geo location that are missing on flickr: " + remoteMissingGeoPhotos.Length);
 			foreach (var o in remoteMissingGeoPhotos) {
 				FlickrUploader.FixGeoLocation (o.local, o.remote);
+				await Task.Delay (1000);
+				if (o.i % 200 == 0) {
+					LocalDatabase.RunLocked (() => {
+						LocalDatabase.Save ();
+					});
+				}
 			}
 
 			// upload

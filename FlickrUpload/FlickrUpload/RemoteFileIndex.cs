@@ -16,7 +16,7 @@ namespace FlickrUpload
 		{
 			PhotoSearchOptions o = new PhotoSearchOptions ();
 			o.Extras = PhotoSearchExtras.AllUrls | PhotoSearchExtras.Description | PhotoSearchExtras.OriginalUrl | PhotoSearchExtras.Tags | PhotoSearchExtras.Geo;
-			o.SortOrder = PhotoSearchSortOrder.DateTakenDescending;
+			o.SortOrder = PhotoSearchSortOrder.DatePostedDescending; // DateTakenDescending
 			//o.Tags = FlickrManager.MasterTag;
 			//o.TagMode = TagMode.AllTags;
 			o.UserId = FlickrManager.OAuthToken.UserId;
@@ -25,6 +25,7 @@ namespace FlickrUpload
 			o.Page = 1;
 
 			var f = FlickrManager.GetAuthInstance ();
+			
 
 			int i = 0;
 			var results = f.PhotosSearch (o);
@@ -42,6 +43,7 @@ namespace FlickrUpload
 					i++;
 				}
 
+				LocalDatabase.RunLocked (() => LocalDatabase.Save ());
 				await Task.Delay (1000);
 
 				o.Page++;

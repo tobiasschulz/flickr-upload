@@ -37,7 +37,11 @@ namespace FlickrUpload
 		{
 			Directory.CreateDirectory (Path.GetDirectoryName (ConfigFile));
 			Console.WriteLine ("Save database to: " + ConfigFile);
-			File.WriteAllText (ConfigFile, Instance.ToJson (ignoreNull: false));
+			File.WriteAllText (ConfigFile + ".new", Instance.ToJson (ignoreNull: false));
+			if (File.Exists (ConfigFile + ".bak"))
+				File.Delete (ConfigFile + ".bak");
+			File.Move (ConfigFile, ConfigFile + ".bak");
+			File.Move (ConfigFile + ".new", ConfigFile);
 		}
 
 		public static void RunLocked (Action action)

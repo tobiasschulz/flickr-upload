@@ -35,6 +35,10 @@ namespace FlickrUpload
 		[JsonProperty ("geo_location")]
 		public GeoLocation GeoLocation { get; set; } = GeoLocation.Zero;
 
+		public LocalFile ()
+		{
+		}
+
 		public LocalFile (string fullPath, string relativePathNormalized)
 		{
 			FullPath = fullPath;
@@ -68,6 +72,10 @@ namespace FlickrUpload
 
 		[JsonProperty ("geo_location")]
 		public GeoLocation GeoLocation { get; set; } = GeoLocation.Zero;
+
+		public RemoteFile ()
+		{
+		}
 
 		public RemoteFile (FlickrNet.Photo p)
 		{

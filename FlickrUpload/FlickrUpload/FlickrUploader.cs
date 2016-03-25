@@ -43,6 +43,8 @@ namespace FlickrUpload
 				var f = FlickrManager.GetAuthInstance ();
 				f.OnUploadProgress += F_OnUploadProgress;
 				f.PhotosGeoSetLocation (remote.PhotoId, file.GeoLocation.Lat, file.GeoLocation.Lng);
+				Console.WriteLine ();
+				remote.GeoLocation = file.GeoLocation;
 			} catch (Exception ex) {
 				CountFailures++;
 				if (CountFailures > 10) {
