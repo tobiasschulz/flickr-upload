@@ -45,6 +45,8 @@ namespace FlickrUpload
 				f.PhotosGeoSetLocation (remote.PhotoId, file.GeoLocation.Lat, file.GeoLocation.Lng);
 				Console.WriteLine ();
 				remote.GeoLocation = file.GeoLocation;
+				LocalDatabase.RunLocked (() => LocalDatabase.Instance.RemoteFiles [remote.Description] = remote);
+
 			} catch (Exception ex) {
 				CountFailures++;
 				if (CountFailures > 10) {

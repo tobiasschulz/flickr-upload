@@ -70,12 +70,13 @@ namespace FlickrUpload
 			foreach (var o in remoteMissingGeoPhotos) {
 				FlickrUploader.FixGeoLocation (o.local, o.remote);
 				await Task.Delay (1000);
-				if (o.i % 200 == 0) {
+				if (o.i % 50 == 0) {
 					LocalDatabase.RunLocked (() => {
 						LocalDatabase.Save ();
 					});
 				}
 			}
+			LocalDatabase.Save ();
 
 			// upload
 			photosToUpload = photosToUpload.Where (p => p.FullPath.ContainsAny ("Francisco", "York", "Reisen", "Tante", "Familie", "Thomas", "Schule", "arty", "Ausfluege", "Maxi", "Tobias")).ToArray ();
