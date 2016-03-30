@@ -42,7 +42,7 @@ namespace FlickrUpload
 				var file = new LocalFile (fullPath: fullPath, relativePathNormalized: relativePathNormalized);
 
 				var ext = Path.GetExtension (fullPath);
-				if (ext.IsAny (".jpg", ".png", ".gif")) {
+				if (ext.IsAny (".jpg", ".png" /*, ".gif"*/)) {
 					photos.Add (file);
 				} else if (ext.IsAny (".mp4", ".mkv")) {
 					videos.Add (file);

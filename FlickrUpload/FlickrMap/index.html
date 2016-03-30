@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+      html { height: 100% }
+      body { height: 100%; margin: 0; padding: 0 }
+      #map-canvas { height: 75%; width: 75%; margin: 0 0 0 2em; }
+      #intro { padding-left: 2em;}
+    </style>
+    <script src="https://code.jquery.com/jquery-2.2.2.min.js" integrity="sha256-36cp2Co+/62rEAAYHLmRCPIych47CvdM+uTBJwSzWjI=" crossorigin="anonymous"></script>
+
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false&key=AIzaSyB3WDbJuoc6iqUEQ7ZkiQWHw6eqO5Os8Zc"></script>
+    <script src="./flickrmap.js"></script>
+  </head>
+  <body>
+    <div id="intro">
+      <h3>A simple demo that shows how JSON, REST and a little JavaScript could be the start of a capable web application.</h3>
+      <label for"lat">Lat:</label>
+      <input id="lat" value="38.8951" placeholder="38.8951" />
+      <label for"lon">Lon:</label>
+      <input id="lon" value="-77.0367" placeholder="-77.0367" />
+      <button id="search">Search</button>
+      <div>
+        <em>Enter a latitude and longitude to find Flickr photos related to the terms "monument", "statue" or "historical".</em>
+      </div>
+    </div>
+    <div id="map-canvas"/>
+  </body>
+</html>

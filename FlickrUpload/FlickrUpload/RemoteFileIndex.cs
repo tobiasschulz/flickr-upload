@@ -15,7 +15,7 @@ namespace FlickrUpload
 		public async Task Build ()
 		{
 			PhotoSearchOptions o = new PhotoSearchOptions ();
-			o.Extras = PhotoSearchExtras.AllUrls | PhotoSearchExtras.Description | PhotoSearchExtras.OriginalUrl | PhotoSearchExtras.Tags | PhotoSearchExtras.Geo;
+			o.Extras = PhotoSearchExtras.AllUrls | PhotoSearchExtras.Description | PhotoSearchExtras.OriginalUrl | PhotoSearchExtras.ThumbnailUrl | PhotoSearchExtras.Tags | PhotoSearchExtras.Geo;
 			o.SortOrder = PhotoSearchSortOrder.DatePostedDescending; // DateTakenDescending
 			//o.Tags = FlickrManager.MasterTag;
 			//o.TagMode = TagMode.AllTags;

@@ -74,6 +74,12 @@ namespace FlickrUpload
 		[JsonProperty ("geo_location")]
 		public GeoLocation GeoLocation { get; set; }
 
+		[JsonProperty ("link_original")]
+		public RemoteUrl LinkOriginal { get; set; }
+
+		[JsonProperty ("link_thumbnail")]
+		public RemoteUrl LinkThumbnail { get; set; }
+
 		public RemoteFile ()
 		{
 		}
@@ -86,6 +92,21 @@ namespace FlickrUpload
 			Description = p.Description;
 			Title = p.Title;
 
+			if (!string.IsNullOrEmpty (p.OriginalUrl)) {
+				LinkOriginal = new RemoteUrl {
+					Url = p.OriginalUrl,
+					Width = p.OriginalWidth,
+					Height = p.OriginalHeight
+				};
+			}
+			if (!string.IsNullOrEmpty (p.ThumbnailUrl)) {
+				LinkThumbnail = new RemoteUrl {
+					Url = p.ThumbnailUrl,
+					Width = p.ThumbnailWidth ?? 0,
+					Height = p.ThumbnailHeight ?? 0
+				};
+			}
+
 			if (Math.Abs (p.Latitude) > 0.1 && Math.Abs (p.Longitude) > 0.1) {
 				GeoLocation = new GeoLocation (p.Latitude, p.Longitude);
 			}
@@ -96,6 +117,18 @@ namespace FlickrUpload
 			// return string.Format ("[RemoteFile: PathTag=\"{0}\", Description=\"{1}\"]", PathTag, Description);
 			return string.Format ("[RemoteFile: Description=\"{0}\"]", Description);
 		}
+	}
+
+	public class RemoteUrl
+	{
+		[JsonProperty ("url")]
+		public string Url { get; set; }
+
+		[JsonProperty ("width")]
+		public int Width { get; set; }
+
+		[JsonProperty ("height")]
+		public int Height { get; set; }
 	}
 }
 
