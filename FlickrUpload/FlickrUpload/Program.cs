@@ -79,7 +79,7 @@ namespace FlickrUpload
 			LocalDatabase.Save ();
 
 			// upload
-			photosToUpload = photosToUpload.Where (p => p.FullPath.ContainsAny ("Francisco", "York", "Reisen", "Tante", "Familie", "Thomas", "Schule", "arty", "Ausfluege", "Maxi", "Tobias")).ToArray ();
+			// photosToUpload = photosToUpload.Where (p => p.FullPath.ContainsAny ("Francisco", "York", "Reisen", "Tante", "Familie", "Thomas", "Schule", "arty", "Ausfluege", "Maxi", "Tobias")).ToArray ();
 
 			var r = new Random ();
 			int i = 0;
