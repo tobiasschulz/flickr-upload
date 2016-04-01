@@ -96,14 +96,17 @@ namespace FlickrUpload
 						isDayTime = true;
 					}
 				} else {
-					if (hours >= 9.5 || hours <= 0.5) {
+					if (hours >= 9.5 || hours <= 0.33) {
 						isDayTime = true;
 					}
 				}
 				if (isDayTime) {
+					LocalDatabase.Save ();
 					var sleep = r.Next (20, 70);
 					Console.WriteLine ("It's " + ((int)hours).ToString ().PadLeft (2, '0') + ":" + timeofday.Minutes.ToString ().PadLeft (2, '0') + ", so we wait " + sleep + " seconds");
 					await Task.Delay (sleep * 1000);
+				} else if (i % 10 == 0) {
+					LocalDatabase.Save ();
 				}
 
 				i++;
